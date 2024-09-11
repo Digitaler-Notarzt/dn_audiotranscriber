@@ -9,6 +9,7 @@ def transcribe_audio(filepath: str):
     mel = whisper.log_mel_spectrogram(audio=audio).to(model.device)
     # _, probs = model.detect_language(mel)
     # print(f"Detected language: {max(probs, key=probs.get)}")
+    print("Random print here lol ok passt")
 
     options = whisper.DecodingOptions()
     result = whisper.decode(model, mel, options)
