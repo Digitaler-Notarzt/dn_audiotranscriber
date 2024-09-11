@@ -1,3 +1,7 @@
-from dn_audiotranscriber import transcribe_audio
+from dn_audiotranscriber import transcribe_audio, record_audio
 
-transcribe_audio()
+
+data = record_audio()
+result = transcribe_audio(data)
+
+print(result["text"])

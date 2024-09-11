@@ -6,8 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'sounddevice',
-        'soundfile',
         'scipy',
         'openai-whisper',
+        'numpy'
     ],
 )
