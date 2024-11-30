@@ -1,13 +1,11 @@
 from setuptools import setup, find_packages
 
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='dn_audiotranscriber',
-    version='0.2',
+    version='0.3',
     packages=find_packages(),
-    install_requires=[
-        'scipy',
-        'openai-whisper',
-        'numpy',
-        'librosa'
-    ],
+    install_requires=requirements,
 )
