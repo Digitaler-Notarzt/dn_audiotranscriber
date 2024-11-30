@@ -2,3 +2,4 @@ sounddevice
 scipy
 openai-whisper
 numpy
+librosa
