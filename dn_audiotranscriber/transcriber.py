@@ -9,14 +9,22 @@ from dn_base import dinologger
 
 logger = dinologger.get_logger("dinologger")
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
-logger.log(msg=f'Using device: {device}', level=logging.DEBUG)
+if torch.cuda.is_available():
+    device = "cuda:0"
+elif torch.mps.is_available():
+    device = "mps:0"
+else:
+    device = "cpu"
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
+logger.log(msg=f'Using device: {device}', level=logging.DEBUG)
+
 model_id = "openai/whisper-large-v3"
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
 )
 model.to(device)
+
 processor = AutoProcessor.from_pretrained(model_id)
 
 pipe = pipeline(
@@ -46,6 +54,7 @@ def prepare_pcm16_audio(pcm16_data, sample_rate, target_sample_rate=16000):
     """
     # Ensure data is in a NumPy array
     pcm16_data = np.asarray(pcm16_data)
+    np.frombuffer()
 
     # Flatten multi-channel audio to mono (e.g., stereo to single channel)
     if pcm16_data.ndim > 1:

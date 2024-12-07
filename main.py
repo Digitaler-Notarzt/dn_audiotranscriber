@@ -17,6 +17,10 @@ def record_audio():
     sd.wait()
     return audio_data
 
+print("Recording now")
 audio = record_audio()
+print("Transcribing")
 audio = prepare_pcm16_audio(audio, freq)
 result = transcribe_audio(audio)
+
+print(f'Resulting Text: {result["text"]}')
