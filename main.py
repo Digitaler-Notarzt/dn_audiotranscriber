@@ -29,6 +29,8 @@ audio = record_audio()
 logger.log(msg="Preparing audio", level=logging.DEBUG)
 audio = prepare_pcm16_audio(audio, freq)
 
+logger.log(msg=f"Audio shape after preparation: {audio.shape}", level=logging.DEBUG)
+
 logger.log(msg="Transcribing audio....", level=logging.DEBUG)
 result = transcribe_audio(audio)
 

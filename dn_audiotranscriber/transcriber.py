@@ -8,8 +8,9 @@ from dn_base import dinologger
 logger = dinologger.get_logger("dinologger")
 
 def transcribe_audio(audio: np.ndarray):
-    model = whisper.load_model("large-v3")
+    model = whisper.load_model("base")
     audio = whisper.pad_or_trim(audio)
+    logger.log(msg=f"Audio shape after padding/trimming: {audio.shape}", level=logging.DEBUG)
 
     logger.log(msg="Using device: " + str(model.device.type), level=logging.DEBUG)
 

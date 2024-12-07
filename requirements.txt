@@ -3,4 +3,5 @@ scipy
 openai-whisper
 numpy
 librosa
+transformers
 dn_base @ git+ssh://git@github.com:/Digitaler-Notarzt/dn_base.git@59964b1f4c45c8e6d5e62267468b7b2d515fe7c0
