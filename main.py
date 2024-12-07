@@ -34,4 +34,4 @@ logger.log(msg=f"Audio shape after preparation: {audio.shape}", level=logging.DE
 logger.log(msg="Transcribing audio....", level=logging.DEBUG)
 result = transcribe_audio(audio)
 
-logger.log(msg=result.text, level=logging.DEBUG)
+logger.log(msg=result["text"], level=logging.DEBUG)

@@ -1,4 +1,7 @@
-import whisper
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from datasets import load_dataset
+
 import numpy as np
 import librosa
 
@@ -7,18 +10,28 @@ from dn_base import dinologger
 
 logger = dinologger.get_logger("dinologger")
 
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+logger.log(msg=f'Using device: {device}', level=logging.DEBUG)
+torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+model_id = "openai/whisper-large-v3"
+model = AutoModelForSpeechSeq2Seq.from_pretrained(
+    model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+)
+model.to(device)
+processor = AutoProcessor.from_pretrained(model_id)
+
+pipe = pipeline(
+    "automatic-speech-recognition",
+    model=model,
+    tokenizer=processor.tokenizer,
+    feature_extractor=processor.feature_extractor,
+    torch_dtype=torch_dtype,
+    device=device,
+)
+
+
 def transcribe_audio(audio: np.ndarray):
-    model = whisper.load_model("base")
-    audio = whisper.pad_or_trim(audio)
-    logger.log(msg=f"Audio shape after padding/trimming: {audio.shape}", level=logging.DEBUG)
-
-    logger.log(msg="Using device: " + str(model.device.type), level=logging.DEBUG)
-
-    mel = whisper.log_mel_spectrogram(audio=audio).to(model.device)
-    options = whisper.DecodingOptions()
-    result = whisper.decode(model, mel, options)
-
-    return result
+    return pipe(audio)
 
 def prepare_pcm16_audio(pcm16_data, sample_rate, target_sample_rate=16000):
     """
