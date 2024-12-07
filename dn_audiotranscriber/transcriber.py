@@ -2,9 +2,17 @@ import whisper
 import numpy as np
 import librosa
 
+import logging
+from dn_base import dinologger
+
+logger = dinologger.get_logger("dinologger")
+
 def transcribe_audio(audio: np.ndarray):
-    model = whisper.load_model("tiny")
+    model = whisper.load_model("base")
     audio = whisper.pad_or_trim(audio)
+    logger.log(msg=f"Audio shape after padding/trimming: {audio.shape}", level=logging.DEBUG)
+
+    logger.log(msg="Using device: " + str(model.device.type), level=logging.DEBUG)
 
     mel = whisper.log_mel_spectrogram(audio=audio).to(model.device)
     options = whisper.DecodingOptions()
