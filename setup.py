@@ -10,7 +10,7 @@ def read_version(fname="dn_audiotranscriber/__version__.py"):
 
 setup(
     name='dn_audiotranscriber',
-    version=read_version(),
+    version="0.0.11",
     packages=find_packages(),
     install_requires=requirements,
 )
