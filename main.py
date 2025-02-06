@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from dn_audiotranscriber import transcribe_audio, prepare_pcm16_audio
 from scipy.io.wavfile import write
 import sounddevice as sd
@@ -6,6 +8,7 @@ import logging
 from dn_base import dinologger
 import warnings
 warnings.filterwarnings("ignore", message="You are using `torch.load` with `weights_only=False`")
+
 
 logger = dinologger.get_logger("dinologger", level=logging.DEBUG, log_file="app.log")
 seconds = 5

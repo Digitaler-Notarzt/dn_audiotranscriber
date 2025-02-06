@@ -21,6 +21,7 @@ torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 logger.log(msg=f'Using device: {device}', level=logging.DEBUG)
 
 model_id = "primeline/whisper-large-v3-turbo-german"
+
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
 )

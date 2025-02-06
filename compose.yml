@@ -1,0 +1,29 @@
+services:
+  dino_postgres:
+    image: postgres:15
+    container_name: dino_postgres
+    # restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DINO_DB_PASSWORD}
+      POSTGRES_DB: ${DINO_DB_NAME}
+    ports:
+      - "5432:5432"
+
+  dino_python:
+    image: markusstuppnig/dino_python:latest
+    container_name: dino_python
+    # restart: always
+    depends_on:
+      - dino_postgres
+    environment:
+      DATABASE_URL: "postgresql://postgres:${DINO_DB_PASSWORD}@dino_postgres:5432/${DINO_DB_NAME}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      ssh:
+        - github=${PRIVATE_SSH_KEY}
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
