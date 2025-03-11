@@ -15,3 +15,6 @@ pip install sounddevice
 
 python main.py
 ```
+## Credits
+
+[German ASR Dataset](https://huggingface.co/datasets/avemio/ASR-GERMAN-MIXED-TEST)
