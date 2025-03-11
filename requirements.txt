@@ -6,3 +6,5 @@ datasets
 transformers
 accelerate
 logging
+datasets
+bitsandbytes

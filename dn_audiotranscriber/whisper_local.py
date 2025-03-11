@@ -3,14 +3,18 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 import numpy as np
 import librosa
 from datasets import load_dataset
-
+import warnings
 import logging
+
+warnings.filterwarnings("ignore", message="`max_new_tokens` is deprecated")
+warnings.filterwarnings("ignore", message="`inputs` is deprecated")
 
 logger = logging.getLogger(__name__)
 
 class WhisperTranscriber:
-    def __init__(self, model_id = "primeline/whisper-large-v3-german"):
-        logger.info("Initializing Whisper transcriber with model_id: ", model_id)
+    def __init__(self, model_id = "primeline/whisper-large-v3-turbo-german", cpu = False):
+        logger.info("Initializing Whisper transcriber with model_id: %s", model_id)
+
         if torch.cuda.is_available():
             self.device = "cuda:0"
         elif torch.mps.is_available():
@@ -18,7 +22,9 @@ class WhisperTranscriber:
         else:
             self.device = "cpu"
 
-        logger.info("Whisper ", model_id)
+        if cpu: self.device =  "cpu"
+
+        logger.info("Using device: %s", self.device)
         
         torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
@@ -69,6 +75,39 @@ class WhisperTranscriber:
             audio_resampled = audio_float32
 
         return audio_resampled
+        import numpy as np
+
+    def normalize_audio(audio_array):
+        """
+        Normalize an audio array for Whisper:
+        - Center the audio by subtracting the mean.
+        - Scale so the maximum absolute value is 1.
+        - Convert to float32.
+        
+        Parameters:
+            audio_array (array-like): Input audio data as a 1-D array.
+        
+        Returns:
+            np.ndarray: Normalized audio array as float32.
+        """
+        # Ensure the input is a numpy array
+        audio_array = np.asarray(audio_array)
+        
+        # Step 1: Center the audio by subtracting the mean
+        mean_val = np.mean(audio_array)
+        centered_array = audio_array - mean_val
+        
+        # Step 2: Find the maximum absolute value and scale
+        max_val = np.max(np.abs(centered_array))
+        if max_val > 0:  # Avoid division by zero
+            normalized_array = centered_array / max_val
+        else:
+            normalized_array = centered_array  # If all zeros, return as is
+        
+        # Step 3: Convert to float32
+        normalized_array = normalized_array.astype(np.float32)
+        
+        return normalized_array
 
     def transcribe(self, audio: np.ndarray):
-        self.pipe(audio)
+        return self.pipe(audio)
